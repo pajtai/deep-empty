@@ -1,4 +1,4 @@
-# deep-compact
+# deep-compact  [![Build Status](https://travis-ci.org/pajtai/deep-empty.png?branch=master)](https://travis-ci.org/pajtai/deep-empty)
 
 This method does a depth first removal of empty values ( [], {}, ''). Other falsey values are preserved.
 
