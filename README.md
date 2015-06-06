@@ -5,11 +5,11 @@ This method does a depth first removal of empty values ( [], {}, ''). Other fals
 For example, it will  return an empty object for the following:
  
  ```
-{ key : [ '', { foo: {}, bar: [] } ] } => {}
+{ key : [ '', { foo: {}, bar: [] } ] }      => {}
 ```
 
 It will return `[false]` for the following:
 
 ```
-[[], false, {}] => [ false ]
+[[], false, {}]                             => [ false ]
 ```
