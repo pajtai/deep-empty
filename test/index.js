@@ -1,32 +1,87 @@
 'use strict';
 
 var chai = require('chai'),
-    compact = require('../index.js');
+    removeEmpty = require('../index.js');
 
 chai.should();
 
-describe('objects', function() {
-    it('removes empty arrays', function() {
-        compact({ key : [] }).should.deep.equal({});
+describe('remove-empty', function() {
+
+
+    it('handles arrays as the base object', function() {
+        removeEmpty([{}, {}, 1, []]).should.deep.equal([1]);
     });
 
-    it('does not remove undefined', function() {
-        compact([{}, undefined, []]).should.deep.equal([undefined]);
+    it('handles objects as the base object', function() {
+        removeEmpty({ a: { b: { c: 'a', d: {}}}}).should.deep.equal({ a: { b: { c : 'a'}}});
     });
 
-    it('removes deeply nested', function() {
-        compact({
-            key : [ 'a', {
-                foo : [[[]]]
-            }]
-        }).should.deep.equal({
-                key:['a']
-            });
-    })
-});
+    describe('removes', function() {
+        it('empty arrays', function() {
+            removeEmpty({ key : [] }).should.deep.equal({});
+        });
 
-describe('arrays', function() {
-    it('removes empty arrays', function() {
-        compact([ [], [] ]).should.deep.equal([]);
+        it('empty objects', function() {
+            removeEmpty({ key : {} }).should.deep.equal({});
+        });
+
+        it('empty strings', function() {
+            removeEmpty(['']).should.deep.equal([]);
+        });
+
+        it('objects created with constructors that have no fields and only added prototype methods', function() {
+
+            function Test() {
+
+            }
+
+            Test.prototype.test = function() { return 42; };
+
+            removeEmpty({a: new Test}).should.deep.equal({});
+        });
+
+        it('deeply nested empty objects and arrays', function() {
+            removeEmpty({
+                key : [ 'a', {
+                    foo : [[[],[{},{}],[[[[[[[]]]]]]]], {a:{b:{c:{d:{e:{}}}}}}]
+                }]
+            }).should.deep.equal({
+                    key:['a']
+                });
+        });
+    });
+
+    describe('does not remove', function() {
+        it('null', function() {
+            removeEmpty([ null ]).should.deep.equal([null]);
+        });
+
+        it('undefined', function() {
+            removeEmpty({ a: undefined }).should.deep.equal({ a: undefined });
+        });
+
+        it('the number 0', function() {
+            removeEmpty([0]).should.deep.equal([0]);
+        });
+
+        it('date objects', function() {
+            var date = new Date;
+            removeEmpty({d: date}).should.deep.equal({d: date});
+        });
+
+        it('functions', function() {
+            var f = function() { return 'hey'; };
+            removeEmpty([f]).should.deep.equal([f]);
+        });
+
+        it('objects created with constructors that have fields', function() {
+            var test = new Test;
+
+            function Test() {
+                this.test = 42;
+            }
+
+            removeEmpty({ a: test }).should.deep.equal({ a: test });
+        });
     });
 });

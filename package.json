@@ -1,13 +1,13 @@
 {
   "name": "deep-empty",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "mocha test -R spec"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Peter Ajtai <peter.ajtai@thinksolid.com>",
+  "license": "MIT",
   "dependencies": {
     "lodash": "^3.9.3"
   },

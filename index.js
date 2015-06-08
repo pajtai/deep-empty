@@ -8,44 +8,40 @@ var _ = require('lodash');
  *
  *     { key : [ false, { foo: undefined, bar: [] } ] }
  *
- * @type {compact}
+ * @type {removeEmpty}
  */
-module.exports = function(object) {
-    // Clone so original is untouched
-    return compact(_.clone(object, true));
-};
+module.exports = removeEmpty;
+function removeEmpty(object, keeper, skip) {
 
-function isEnum(object) {
-    // Clone so any deletions don't put object into hash table mode
-    return _.clone((_.isArray(object) || _.isObject(object)) && !_.isEmpty(object), true);
+    var isArray;
+
+    keeper  = keeper    || isAKeeper;
+    skip    = skip      || returnAsIs;
+
+    if (skip(object)) {
+        return object;
+    }
+
+    isArray = _.isArray(object);
+
+    return _.reduce(object, function (acc, value, key) {
+
+        if (_.isObject(value)) {
+            value = removeEmpty(value);
+        }
+        if (keeper(value)) {
+            isArray ? acc.push(value) : acc[key] = value;
+        }
+        return acc;
+    }, isArray ? [] : {});
 }
 
-function compact(object) {
-    var index;
-    if (_.isArray(object)) {
-        index = object.length;
-        while(index--) {
-            iterate(object, object[index], index);
-        }
-    } else {
-        _.each(object, iterate.bind(null, object));
-    }
-    return object;
+function returnAsIs(value) {
+    return !_.isObject(value) || _.isDate(value) || _.isFunction(value);
 }
 
-function iterate(object, value, key) {
-    if (isEnum(object)) {
-        compact(value);
-    }
-
-    if ((_.isArray(value))) {
-        value = _.compact(value);
-    }
-    if ((_.isArray(value) || _.isString(value) || _.isObject(value)) && _.isEmpty(value)) {
-        if (_.isArray(object)) {
-            object.splice(key, 1);
-        } else {
-            delete object[key];
-        }
-    }
+function isAKeeper(value) {
+    return  (_.isDate(value) || _.isFunction(value)) ||     // all dates and functions are kept
+            (!_.isObject(value) && !_.isString(value)) ||   // all things that are not object or string are kep
+            !_.isEmpty(value);                              // only non empty strings and objects are kept
 }
