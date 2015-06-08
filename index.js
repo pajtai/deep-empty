@@ -6,7 +6,7 @@ var _ = require('lodash');
  * This method does a depth first removal of empty values ( [], {}, ''). Other falsey values are preserved.
  * It will  return an empty object for the following:
  *
- *     { key : [ false, { foo: undefined, bar: [] } ] }
+ *     { key : [ '', { foo: {}, bar: [] } ] }
  *
  * @type {deepEmpty}
  */
@@ -42,6 +42,6 @@ function returnAsIs(value) {
 
 function isAKeeper(value) {
     return  (_.isDate(value) || _.isFunction(value)) ||     // all dates and functions are kept
-            (!_.isObject(value) && !_.isString(value)) ||   // all things that are not object or string are kep
+            (!_.isObject(value) && !_.isString(value)) ||   // all things that are not objects or strings are kept
             !_.isEmpty(value);                              // only non empty strings and objects are kept
 }
