@@ -15,23 +15,22 @@ function deepEmpty(object, keeper, skip) {
 
     var isArray;
 
-    keeper  = keeper    || isAKeeper;
     skip    = skip      || returnAsIs;
-
     if (skip(object)) {
         return object;
     }
+    keeper  = keeper    || isAKeeper;
 
     isArray = _.isArray(object);
 
     return _.reduce(object, function (acc, value, key) {
 
-        if (_.isObject(value)) {
-            value = deepEmpty(value);
-        }
+        value = deepEmpty(value);
+
         if (keeper(value)) {
             isArray ? acc.push(value) : acc[key] = value;
         }
+
         return acc;
     }, isArray ? [] : {});
 }
