@@ -8,10 +8,10 @@ var _ = require('lodash');
  *
  *     { key : [ false, { foo: undefined, bar: [] } ] }
  *
- * @type {removeEmpty}
+ * @type {deepEmpty}
  */
-module.exports = removeEmpty;
-function removeEmpty(object, keeper, skip) {
+module.exports = deepEmpty;
+function deepEmpty(object, keeper, skip) {
 
     var isArray;
 
@@ -27,7 +27,7 @@ function removeEmpty(object, keeper, skip) {
     return _.reduce(object, function (acc, value, key) {
 
         if (_.isObject(value)) {
-            value = removeEmpty(value);
+            value = deepEmpty(value);
         }
         if (keeper(value)) {
             isArray ? acc.push(value) : acc[key] = value;
