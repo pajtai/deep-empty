@@ -5,16 +5,16 @@ This method does a depth first removal of "empty" values ( [], {}, '') from coll
 For example, it will  return an empty object for the following:
  
  ```
-{ key : [ '', { foo: {}, bar: [] } ] }      => {}
+require('deep-empty')({ key : [ '', { foo: {}, bar: [] } ] })      => {}
 ```
 
 It will return `[false]` for the following:
 
 ```
-[[], false, {}]                             => [ false ]
+require('deep-empty')([[], false, {}])                             => [ false ]
 ```
 
-The method can be optionally customized in two ways.
+The method can optionally be customized in two ways.
 
 1. You can pass in the values to keep when iterating over a collection.
 1. You can pass in the things that should not be considered a collection to iterate over. 
