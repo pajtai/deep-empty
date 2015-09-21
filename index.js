@@ -25,7 +25,7 @@ function deepEmpty(object, keeper, skip) {
 
     return _.reduce(object, function (acc, value, key) {
 
-        value = deepEmpty(value);
+        value = deepEmpty(value, keeper, skip);
 
         if (keeper(value)) {
             isArray ? acc.push(value) : acc[key] = value;

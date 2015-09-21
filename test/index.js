@@ -1,12 +1,26 @@
 'use strict';
 
 var chai = require('chai'),
-    removeEmpty = require('../index.js');
+    removeEmpty = require('../index.js'),
+    _ = require('lodash');
 
 chai.should();
 
 describe('remove-empty', function() {
 
+
+    describe('customization', function() {
+        it('can pass in custom keeper function', function() {
+            removeEmpty({'one' : {'two' : [], 'three': ''}}, isAKeeper)
+                .should.deep.equal({'one' : {'two' : []}});
+        });
+
+        function isAKeeper(value) {
+            return  (_.isDate(value) || _.isFunction(value) || _.isArray(value)) ||     // all dates and functions are kept
+                (!_.isObject(value) && !_.isString(value)) ||   // all things that are not objects or strings are kept
+                !_.isEmpty(value);                              // only non empty strings and objects are kept
+        }
+    });
 
     it('handles arrays as the base object', function() {
         removeEmpty([{}, {}, 1, []]).should.deep.equal([1]);
